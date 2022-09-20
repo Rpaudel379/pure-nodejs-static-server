@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homepage</title>
+    <link rel="stylesheet" href="../css/style.css" />
+</head>
+
+<body>
+    <nav class="flex items-center justify-between p-5 bg-gray-200">
+        <div>
+            <a href="/">Logo</a>
+        </div>
+        <div class="space-x-5">
+            <a href="/">Home</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </nav>
+
+    <div>
+        <h1 class="text-center text-4xl text-indigo-500 my-10">
+            Welcome to the home page
+            <span class="font-bold text-indigo-800">
+
+                <%= name %>
+            </span>
+        </h1>
+    </div>
+
+    <div class="w-full h-full md:h-[500px] md:w-[60%] mx-auto">
+
+        <p class="text-sm text-neutral-600 my-3">Below image is static image served from nodejs server</p>
+        <img src="../images/image1.jpg" alt="ss" class="h-full w-full object-cover" />
+    </div>
+
+    <script src="../js/app.js"></script>
+</body>
+
+</html>
