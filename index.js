@@ -2,32 +2,14 @@ import fs from "fs";
 import http from "http";
 import path from "path";
 import ejs from "ejs";
+import { renderPage } from "./renderPage.js";
+import mimeTypes from "./mimeTypes.js";
 
 const staticFolderDir = path.join(path.resolve(""), "static");
-const errorPage = path.join(staticFolderDir, "templates", "404.ejs");
-const mimeTypes = {
-  ".html": "text/html",
-  ".ejs": "text/html",
-  ".js": "text/javascript",
-  ".css": "text/css",
-  ".json": "application/json",
-  ".png": "image/png",
-  ".jpg": "image/jpg",
-  ".gif": "image/gif",
-  ".svg": "image/svg+xml",
-  ".wav": "audio/wav",
-  ".mp4": "video/mp4",
-  ".woff": "application/font-woff",
-  ".ttf": "application/font-ttf",
-  ".eot": "application/vnd.ms-fontobject",
-  ".otf": "application/font-otf",
-  ".wasm": "application/wasm",
-};
-
 // create a http server
 
 http
-  .createServer((req, res) => {
+  .createServer(async (req, res) => {
     //? GET Requests
     if (req.method === "GET") {
       const url = req.url;
@@ -60,21 +42,21 @@ http
         options = undefined;
       }
 
-      fs.readFile(staticFileDir, options, (err, page) => {
-        if (err) {
-          fs.readFile(errorPage, { encoding: "utf8" }, (err, errPage) => {
-            res.writeHead(404, { "Content-Type": "text/html" });
-            res.end(errPage);
-          });
+      const renderReturns = await renderPage(staticFileDir, options);
+      const pageFound = renderReturns.pageFound;
+      const file = renderReturns.file;
+
+      res.writeHead(200, { "Content-Type": mimeTypes[ext] });
+
+      if (pageFound) {
+        if (options) {
+          res.end(ejs.render(file, { name: "anish" }));
         } else {
-          res.writeHead(200, { "Content-Type": mimeTypes[ext] });
-          if (!options) {
-            res.end(page);
-          } else {
-            res.end(ejs.render(page, { name: "anish" }));
-          }
+          res.end(file);
         }
-      });
+      } else {
+        res.end(ejs.render(file));
+      }
     }
   })
   .listen(5000, () => {
